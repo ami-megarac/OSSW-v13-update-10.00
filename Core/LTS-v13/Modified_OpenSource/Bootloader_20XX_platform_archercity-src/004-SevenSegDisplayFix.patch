@@ -1,0 +1,13 @@
+diff -Nur uboot/arch/arm/mach-aspeed/ast2600/board_common.c uboot_new/arch/arm/mach-aspeed/ast2600/board_common.c
+--- uboot/arch/arm/mach-aspeed/ast2600/board_common.c	2023-04-18 17:10:21.569944526 +0800
++++ uboot_new/arch/arm/mach-aspeed/ast2600/board_common.c	2023-04-19 10:55:07.795298900 +0800
+@@ -164,6 +164,9 @@
+ 	*(volatile u32 *)(0x1e789000 + 0x238) = 0x5e; /* init LPC mailbox register E */
+ 	*(volatile u32 *)(0x1e789000 + 0x23c) = 0x31; /* init LPC mailbox register F */
+ #endif
++
++    *(volatile u32 *)(0x1e789000 + 0x080) |= 0x80000000; /* Enable postcode 80h GPIO controls from host side */
++    *(volatile u32 *)(0x1e789000 + 0x100) |= 0x2000; /* Enable postcode 80h to SGPIO function */
+ 	
+ 	return 0;
+ }

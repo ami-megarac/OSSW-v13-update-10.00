@@ -1,0 +1,11 @@
+diff -Nuar a/drivers/peci/busses/peci-aspeed.c b/drivers/peci/busses/peci-aspeed.c
+--- a/drivers/peci/busses/peci-aspeed.c	2023-10-26 18:01:53.519762640 +0530
++++ b/drivers/peci/busses/peci-aspeed.c	2023-10-26 18:01:17.039786213 +0530
+@@ -239,7 +239,6 @@
+ 	/* Check command sts and bus idle state */
+ 	ret = aspeed_peci_check_idle(priv);
+ 	if (ret) {
+-		dev_warn(priv->dev, "Check idle timeout!\n");
+ 		reset_control_assert(priv->rst);
+ 		reset_control_deassert(priv->rst);
+ 		aspeed_peci_init_ctrl(priv);

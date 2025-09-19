@@ -1,0 +1,23 @@
+diff -Nuar a/drivers/peci/busses/peci-aspeed.c b/drivers/peci/busses/peci-aspeed.c
+--- a/drivers/peci/busses/peci-aspeed.c	2023-10-19 19:36:26.092296858 +0530
++++ b/drivers/peci/busses/peci-aspeed.c	2023-10-19 19:40:20.341835852 +0530
+@@ -179,6 +179,9 @@
+ 	/* 0: reference clock, 1 : HCLK */
+ 	int			bus_clk_sel;
+ };
++
++static int aspeed_peci_init_ctrl(struct aspeed_peci *priv);
++
+ static void aspeed_peci_init_regs(struct aspeed_peci *priv)
+ {
+ 	/*
+@@ -237,6 +240,9 @@
+ 	ret = aspeed_peci_check_idle(priv);
+ 	if (ret) {
+ 		dev_warn(priv->dev, "Check idle timeout!\n");
++		reset_control_assert(priv->rst);
++		reset_control_deassert(priv->rst);
++		aspeed_peci_init_ctrl(priv);
+ 		return ret;
+ 	}
+ 	spin_lock_irqsave(&priv->lock, flags);

@@ -1,0 +1,35 @@
+diff -Nur uboot/arch/arm/mach-aspeed/ast2600/board_common.c uboot_new/arch/arm/mach-aspeed/ast2600/board_common.c
+--- uboot/arch/arm/mach-aspeed/ast2600/board_common.c	2022-10-13 22:19:21.844306079 +0530
++++ uboot_new/arch/arm/mach-aspeed/ast2600/board_common.c	2022-10-13 22:23:17.731467497 +0530
+@@ -140,7 +140,31 @@
+ 
+ 	enable_onboard_tpm();
+ 
++#if defined(CONFIG_SPX_FEATURE_INTEL_PFR_SUPPORT)
++	/* If restart from AC power */
++	if (0x30 == (*(volatile u32 *)(0x1e6e2000 + 0x64) & 0x30))
++	{
++		*(volatile u32 *)(0x1e789000 + 0x230) = 0; /* init LPC mailbox register C */
++		*(volatile u32 *)(0x1e789000 + 0x234) = 2; /* init LPC mailbox register D */
++	}
++	else /* restart due to reset */
++	{
++		/* if prior to reset, we had control of host spi */
++		if (*(volatile u32 *)(0x1e789000 + 0x234) & 0x1)
++		{
++			/* Honestly we do nothing here... 
++			 * We will check if state == 0x14 (fv update) from libcomppfr init 
++			 * Once the update completes, libcomppfr will init register D */
+ 
++			/* For now, just skip init of register D.  
++			 * Register E & F should already be initialized */
++		}
++	}
++
++	*(volatile u32 *)(0x1e789000 + 0x238) = 0x5e; /* init LPC mailbox register E */
++	*(volatile u32 *)(0x1e789000 + 0x23c) = 0x31; /* init LPC mailbox register F */
++#endif
++	
+ 	return 0;
+ }
+ 

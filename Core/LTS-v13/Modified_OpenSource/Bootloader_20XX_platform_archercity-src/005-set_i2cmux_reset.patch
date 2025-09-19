@@ -1,0 +1,23 @@
+--- uboot/arch/arm/mach-aspeed/ast2600/board_common.c	2023-08-08 11:06:51.900892832 -0400
++++ uboot.new/arch/arm/mach-aspeed/ast2600/board_common.c	2023-08-10 13:27:59.742395748 -0400
+@@ -168,6 +168,20 @@
+     *(volatile u32 *)(0x1e789000 + 0x080) |= 0x80000000; /* Enable postcode 80h GPIO controls from host side */
+     *(volatile u32 *)(0x1e789000 + 0x100) |= 0x2000; /* Enable postcode 80h to SGPIO function */
+ 	
++    *(volatile u32 *)(0x1e6e2000 + 0x430) &=0xfffeffff;  /* Enable GPIOS0 for pca9546 reset */
++    *(volatile u32 *)(0x1e6e2000 + 0x630) |=0x10000;    /* Disable GPIOS0 internal pull down */
++    *(volatile u32 *)(0x1e6e2000 + 0x414) &=0xfffdffff; /* Enable GPIOG1 for pca9543 reset */
++    *(volatile u32 *)(0x1e6e2000 + 0x4b4) &=0xfffdffff;
++    *(volatile u32 *)(0x1e6e2000 + 0x694) &=0xfffdffff;
++
++	
++    *(volatile u32 *)(0x1e780000 + 0x80) &=0xfffeffff;  /* set gpios0 value 0 */
++    *(volatile u32 *)(0x1e780000 + 0x84) |=0x10000;    /* set gpios0 output */
++    *(volatile u32 *)(0x1e780000 + 0x20) &=0xfffdffff;    /* set gpiog1 value 0*/
++    *(volatile u32 *)(0x1e780000 + 0x24) |=0x20000;    /* set gpiog1 output */
++	udelay(1);
++    *(volatile u32 *)(0x1e780000 + 0x80) |=0x10000;    /* set gpios0 value 1 */
++    *(volatile u32 *)(0x1e780000 + 0x20) |=0x20000;    /* set gpiog1 value 1 */
+ 	return 0;
+ }
+ 
